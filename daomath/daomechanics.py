@@ -34,7 +34,7 @@ class VectorField:
         x = reduce_array(x, reduce)
         y = reduce_array(y, reduce)
 
-        q = plt.quiver(x0, y0, x, y, angles='xy', scale_units='xy', scale=scale, color=color, width=width,label=label,linewidth=1)
+        q = plt.quiver(x0, y0, x, y, angles='xy', scale_units='xy', scale=scale, color=color, width=width,label=label)
         #line3, = plt.plot([0, 0, 0], label=r'$\vec F$', linewidth=1, color=color)
         ax = plt.gca()
         #ax.plot([10, 6, 10])
@@ -43,7 +43,7 @@ class VectorField:
         ax.spines['bottom'].set_position('zero')
         ax.spines['left'].set_position('zero')
         ax.spines['right'].set_color('none')
-        plt.text(self.rng[1], self.rng[1], label, fontsize=20, verticalalignment='center')
+        #plt.text(self.rng[1], self.rng[1], label, fontsize=20, verticalalignment='center')
         plt.xlim(self.rng[0], self.rng[1])
         plt.ylim(self.rng[0], self.rng[1])
 
@@ -85,6 +85,9 @@ class VectorField:
         return VectorField(np.array([x0,y0,x,y]).T)
 
 
-f = VectorField(lambda x,y : 0 , lambda x,y : -9.8)
-f.plot_field(reduce=8,scale=10,width=0.003,label=r'$-g.\vec{j}$')
+M=10
+fx = lambda x, y: -M * x / ((x ** 2 + y ** 2) ** (3 / 2))
+fy = lambda x, y: -M * y / ((x ** 2 + y ** 2) ** (3 / 2))
+f = VectorField(fx , fy)
+f.plot_field(reduce=6,scale=10,width=0.003)
 plt.show()
