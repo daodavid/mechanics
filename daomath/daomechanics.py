@@ -172,15 +172,35 @@ class MaterialPoint():
         q = plt.quiver(x0, x0, x, y, angles='xy', scale_units='xy', scale=1, color='r', width=0.003)
         line3, = plt.plot([4, 2, 1], label=r'$\vec r$', linewidth=1, color='r')
 
+    def plot_graph(self):
+        plt.plot(self.r[:, 2], self.r[:, 3])
 
+
+    def get_size(self,z=1):
+        self.z = z
+        size = self.r.shape[0]/z
+        return size
 
 
     def update_HTML_animation(self,i):
         ax = plt.gca()
         # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
         # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
-        q =plt.scatter( self.r[i, 2], self.r[i, 3])
+        i = i*self.z
+        q =plt.scatter(self.r[i, 2], self.r[i, 3])
         return q,
 
+
+
+point = MaterialPoint(x0=4,y0=5)
+# z = point.calculate_radius_vector(3,4)
+# anim = animation.FuncAnimation(fig, point.update_HTML_animation, fargs=(Q, X, Y),
+#                                interval=50, blit=False)
+z = point.calculate_radius_vector(-1,-4)
+point.plot_graph()
+size = int(point.get_size(100))
+point.update_HTML_animation(1)
+print(size)
+plt.show()
 
 #
