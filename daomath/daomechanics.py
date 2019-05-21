@@ -137,7 +137,7 @@ class MaterialPoint():
         k = 5
         fx = lambda t, x, y: -k * x / ((x ** 2 + y ** 2) ** (3 / 2))
         fy = lambda t, x, y: -k * y / ((x ** 2 + y ** 2) ** (3 / 2))
-        self.r = leapFrog(fx, fy, 3, 3, -1 * np.sin(np.pi / 2), -1 * np.cos(np.pi / 2), h=0.01)
+        self.r = leapFrog(fx, fy, 3, 3,  np.sin(np.pi / 2), np.cos(np.pi / 2), h=0.01)
         print(self.r.shape[0])
         return self.r
 
@@ -187,16 +187,21 @@ class MaterialPoint():
         # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
         # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
         i = i*self.z
+        ax.spines['top'].set_color('none')
+        ax.spines['bottom'].set_position('zero')
+        ax.spines['left'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.set_aspect('equal')
         q =plt.scatter(self.r[i, 2], self.r[i, 3])
         return q,
 
 
 
-point = MaterialPoint(x0=4,y0=5)
+point = MaterialPoint(x0=10,y0=10)
 # z = point.calculate_radius_vector(3,4)
 # anim = animation.FuncAnimation(fig, point.update_HTML_animation, fargs=(Q, X, Y),
 #                                interval=50, blit=False)
-z = point.calculate_radius_vector(-1,-4)
+z = point.calculate_radius_vector(-20,-20)
 point.plot_graph()
 size = int(point.get_size(100))
 point.update_HTML_animation(1)
