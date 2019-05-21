@@ -172,65 +172,15 @@ class MaterialPoint():
         q = plt.quiver(x0, x0, x, y, angles='xy', scale_units='xy', scale=1, color='r', width=0.003)
         line3, = plt.plot([4, 2, 1], label=r'$\vec r$', linewidth=1, color='r')
 
-    def animate(self, i):
-        plt.scatter(self.r[i, 0], self.r[i, 1])
-        plt.plot(self.r[:, 0], self.r[:, 1])
 
-    def plot_motion(self):
-        self.calculate_radius_vector(-4 * np.sin(np.pi / 2), -4 * np.cos(np.pi / 2))
-        fig = plt.figure()
-        ax1 = fig.add_subplot(1, 1, 1)
 
-        anim = ani.FuncAnimation(fig, self.animate, interval=0.00001)
-        self.ax = plt.gca()
-        plt.title('Arrows scale with plot width, not view')
-        self.ax.spines['top'].set_color('none')
-        self.ax.spines['bottom'].set_position('zero')
-        self.ax.spines['left'].set_position('zero')
-        self.ax.spines['right'].set_color('none')
-        plt.text(1, 1, r'$2 \frac{m}{s}$', fontsize=20, verticalalignment='center', transform=self.ax.transAxes)
-        plt.xlim(-100, 100)
-        plt.ylim(-100, 100)
-        plt.axis('equal')
-        return anim
 
-    def plot_motion_html(self):
-        line4, = plt.plot([4, 3, 2], label='low of motion', linewidth=1, color='black')
-        plt.legend(handles=[line, line2, line3, line4], loc=7)
-        plt.plot(x, y, color='black')
+    def update_HTML_animation(self,i):
+        ax = plt.gca()
+        # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
+        # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
+        q =plt.scatter( self.r[i, 2], self.r[i, 3])
+        return q,
 
-    def html_fig(self):
-        self.fig = plt.figure()
-        self.ax = plt.axes(xlim=(0, 1), ylim=(-6, 10))
-        self.line, = self.ax.plot([], [], lw=1)
-
-    def init_html_ani(self):
-        self.line.set_data([], [])
-        return (self.line,)
-
-    def aniHtml(self, i):
-        x = np.linspace(0, 2, 1000)
-        y = np.sin(2 * np.pi * (x - 0.01 * i))
-        self.line.set_data(self.r[i, 0], self.r[i, 1])
-        #
-        return (self.line,)
-
-    def motion_to_HTML_video(self):
-        self.html_fig()
-        rc('animation', html='html5')
-        print(self.r[:0].shape[0] )
-        anim = animation.FuncAnimation(self.fig, self.aniHtml, init_func=self.init_html_ani,
-                                       frames=self.r.shape[0] ,interval=000.1, blit=True)
-
-        HTML(anim.to_html5_video())
 
 #
-point = MaterialPoint(x0=4,y0=5)
-z = point.calculate_radius_vector(3,4)
-print(z[:,0])
-#point.plot_motion()
-# point.motion_to_HTML_video()
-#
-# anim = animation.FuncAnimation(point.fig, point.aniHtml, init_func=point.init_html_ani,
-#                                        frames=100, interval=20, blit=True)
-# HTML(anim.to_html5_video())
