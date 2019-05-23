@@ -187,8 +187,8 @@ class MaterialPoint():
         size = self.r.shape[0] / z
         return size
 
-    def update_HTML_animation(self, i):
-        v = 'd'
+    def update_HTML_animation(self, i,arg):
+
 
 
         ax = plt.gca()
@@ -196,15 +196,33 @@ class MaterialPoint():
         # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
         # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
         i = i * self.z
+
+        arg.clf()
         ax.spines['top'].set_color('none')
         ax.spines['bottom'].set_position('zero')
         ax.spines['left'].set_position('zero')
         ax.spines['right'].set_color('none')
         ax.set_aspect('equal')
+        particles, = ax.plot([], [], 'bo', ms=6)
+        particles.set_data([], [])
+        particles.set_data(self.r[i, 0], self.r[i, 1])
+        particles.set_markersize(20)
 
-        q = plt.scatter(self.r[i, 0], self.r[i, 1],color='black')
 
-        return q,
+
+        q = plt.scatter(self.r[i, 0], self.r[i, 1], color='black')
+        q = plt.scatter(0, 0, color='black')
+
+        rezult = particles
+
+
+        z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
+        plt.draw()
+
+        return particles,z
+        #
+
+
 
 
 
@@ -223,10 +241,10 @@ f = VectorField(u, v)
 point.add_force(f)
 z = point.calculate_radius_vector(20*np.cos(np.pi/4), +50*np.sin(np.pi/4),n=1000)
 
-point.plot_graph()
-size = int(point.get_size(1))
-point.update_HTML_animation(1)
-print(size)
-plt.show()
+# point.plot_graph()
+# size = int(point.get_size(1))
+# point.update_HTML_animation(1)
+# print(size)
+# plt.show()
 
 #
