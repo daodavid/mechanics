@@ -51,7 +51,8 @@ class VectorField:
     def evaluate_cord_field(self):
         x = np.linspace(self.rng[0], self.rng[1], 50)
         y = np.linspace(self.rng[0], self.rng[1], 50)
-        self.field_cordinates = np.array([[x0, y0, self.U(x0, y0), self.V(x0, y0)] for y0 in y for x0 in x])
+        t = np.linspace(self.rng[0], self.rng[1], 50)
+        self.field_cordinates = np.array([[x0, y0, self.U(t[0],x0, y0), self.V(t[0],x0, y0)] for y0 in y for x0 in x])
 
     def get_coridinates(self):
         return self.field_cordinates
@@ -91,6 +92,9 @@ class VectorField:
 # f = VectorField(fx, fy)
 # f.plot_field(reduce=6, scale=10, width=0.003)
 # plt.show()
+class Force(VectorField):
+    def __init__(self, x_function, y_function, z_function=None, range=[-10, 10], coridinates=None):
+        super().__init__(x_function, y_function, z_function=None, range=[-10, 10], coridinates=None)
 
 
 class MaterialPoint():
@@ -114,13 +118,16 @@ class MaterialPoint():
         pass
 
     def get_mass(self):
-        pass
+        return self.mass
 
     def get_radius_vecotor(self):
         pass
 
     def add_force_field(self, f):
         self.force = f
+
+    def add_force(self, force):
+        self.force = force
 
     def calculate_speed(self, vx0, vy0, time_range=[0, 100], step=60):
         self.vx0 = vx0
@@ -130,20 +137,20 @@ class MaterialPoint():
     def draw_speed(self):
         self.force.plot_field(self.speed_space, color='green')
 
-    def calculate_radius_vector(self, vx0, vy0):
+    def calculate_radius_vector(self, vx0, vy0,n=10,h=0.01):
         # self.r = leapFrog(self.force.U,self.force.V,vx0,vy0,h=0.0001)
         # self.x_args = intergrate(self.x0,self.speed_space[:,0],self.speed_space[:,2])
         # self.y_args = intergrate(self.y0, self.speed_space[:,1], self.speed_space[:,2])
-        k = 5
-        fx = lambda t, x, y: -k * x / ((x ** 2 + y ** 2) ** (3 / 2))
-        fy = lambda t, x, y: -k * y / ((x ** 2 + y ** 2) ** (3 / 2))
-        self.r = leapFrog(fx, fy, 3, 3,  np.sin(np.pi / 2), np.cos(np.pi / 2), h=0.01)
+        #k = 7
+        # fx = lambda t, x, y: -k * x / ((x ** 2 + y ** 2) ** (3 / 2))
+        # fy = lambda t, x, y: -k * y / ((x ** 2 + y ** 2) ** (3 / 2))
+        self.r = leapFrog(self.force.U, self.force.V, self.x0, self.y0, vx0, vy0,n=n, h=h, c=self.mass)
         print(self.r.shape[0])
         return self.r
 
     def plot_radios_vector(self):
         n = 10
-        v_space = solve2Order(self.force.U, self.force.V, self.x0, self.y0, self.vx0, self.vy0, n=9000)
+        v_space = solve2Order(self.force.U, self.force.V, self.x0, self.y0, self.vx0, self.vy0, n=n)
         x = reduce_array(v_space[:, 0], n)
         y = reduce_array(v_space[:, 1], n)
         x0 = x * 0
@@ -173,37 +180,51 @@ class MaterialPoint():
         line3, = plt.plot([4, 2, 1], label=r'$\vec r$', linewidth=1, color='r')
 
     def plot_graph(self):
-        plt.plot(self.r[:, 2], self.r[:, 3])
+        plt.plot(self.r[:, 0], self.r[:, 1])
 
-
-    def get_size(self,z=1):
+    def get_size(self, z=1):
         self.z = z
-        size = self.r.shape[0]/z
+        size = self.r.shape[0] / z
         return size
 
+    def update_HTML_animation(self, i):
+        v = 'd'
 
-    def update_HTML_animation(self,i):
+
         ax = plt.gca()
+
         # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
         # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
-        i = i*self.z
+        i = i * self.z
         ax.spines['top'].set_color('none')
         ax.spines['bottom'].set_position('zero')
         ax.spines['left'].set_position('zero')
         ax.spines['right'].set_color('none')
         ax.set_aspect('equal')
-        q =plt.scatter(self.r[i, 2], self.r[i, 3])
+
+        q = plt.scatter(self.r[i, 0], self.r[i, 1],color='black')
+
         return q,
 
 
 
-point = MaterialPoint(x0=10,y0=10)
 # z = point.calculate_radius_vector(3,4)
 # anim = animation.FuncAnimation(fig, point.update_HTML_animation, fargs=(Q, X, Y),
+#
 #                                interval=50, blit=False)
-z = point.calculate_radius_vector(-20,-20)
+
+k = 10
+u = lambda t, x, y: -400 * x / ((x ** 2 + y ** 2) ** (3 / 2))
+v = lambda t, x, y: -400 * y / ((x ** 2 + y ** 2) ** (3 / 2))
+u = lambda t, x, y: 0
+v = lambda t, x, y: -10
+point = MaterialPoint(x0=0, y0=0, mass=1)
+f = VectorField(u, v)
+point.add_force(f)
+z = point.calculate_radius_vector(20*np.cos(np.pi/4), +50*np.sin(np.pi/4),n=1000)
+
 point.plot_graph()
-size = int(point.get_size(100))
+size = int(point.get_size(1))
 point.update_HTML_animation(1)
 print(size)
 plt.show()

@@ -78,7 +78,7 @@ def integrate(x0, dxdt, t):
     return np.array([x_args, t]).T
 
 
-def leapFrog(u, v, x0, y0, vx_0, vy_0, n=10000, h=0.001):
+def leapFrog(u, v, x0, y0, vx_0, vy_0, n=1000, h=0.1,c = 1):
     """
       verry important numerical method for ode
       can be use well for solving system ode second order
@@ -94,6 +94,7 @@ def leapFrog(u, v, x0, y0, vx_0, vy_0, n=10000, h=0.001):
     :param vy_0:
     :param n:  numbet of step
     :param h:  step
+    :param c = can be some constant as mass
     :return:
     """
 
@@ -109,11 +110,11 @@ def leapFrog(u, v, x0, y0, vx_0, vy_0, n=10000, h=0.001):
     y_speed = [vy]
 
     for i in range(n):
-        x = x + vx * (h / 2)
-        y = y + vy * (h / 2)
+        x = x + vx * (h / 2)/c
+        y = y + vy * (h / 2)/c
 
-        vx = vx + h * u(t, x, y)
-        vy = vy + h * v(t, x, y)
+        vx = (vx + h * u(t, x, y))/c
+        vy = (vy + h * v(t, x, y))/c
 
         x = x + vx * (h / 2)
         y = y + vy * (h / 2)
