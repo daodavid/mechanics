@@ -210,7 +210,7 @@ class MaterialPoint():
 
 
 
-        q = plt.scatter(self.r[i, 0], self.r[i, 1], color='black')
+        q = plt.scatter(self.r[i, 0], self.r[i, 1], color='black',linewidths=5)
         q = plt.scatter(0, 0, color='black')
 
         rezult = particles
@@ -219,7 +219,7 @@ class MaterialPoint():
         z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
         plt.draw()
 
-        return particles,z
+        return particles
         #
 
 
