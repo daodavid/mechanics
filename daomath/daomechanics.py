@@ -127,6 +127,8 @@ class MaterialPoint():
 
     def get_mass(self):
         return self.mass
+    def get_energy(self):
+        return self.mass*(self.last_vx**2 + self.last_vy**2)/2
 
     def set_last_coor(self, x, y):
         self.last_x = x
@@ -183,15 +185,14 @@ class MaterialPoint():
     def get_coordinates(self):
         return np.array([self.x_args,self.y_args]).T
 
-    def plot_radios_vector(self):
+    def plot_radios_vector(self,reduce=20):
         n = 10
-        v_space = solve2Order(self.force.U, self.force.V, self.x0, self.y0, self.vx0, self.vy0, n=n)
-        x = reduce_array(v_space[:, 0], n)
-        y = reduce_array(v_space[:, 1], n)
-        x0 = x * 0
-        y0 = y * 0
+        x = reduce_array(self.r[:, 0],reduce)
+        y = reduce_array(self.r[:, 1], reduce)
+        x0 = x*0
+
         q = plt.quiver(x0, x0, x, y, angles='xy', scale_units='xy', scale=1, color='r', width=0.003)
-        # plt.plot(x,y)
+        plt.show()
 
     def plot_graph_motion(self, scale=6000):
         n = scale
@@ -272,4 +273,18 @@ class MaterialPoint():
 # print(size)
 # plt.show()
 
+
 #
+# fig = plt.figure(figsize=(6, 6))
+# fig = plt.figure(figsize=(6, 6))
+#
+# u = lambda t, x, y: 0
+# v = lambda t, x, y: -10
+# point = MaterialPoint(x0=0, y0=0, mass=1)
+# f = VectorField(u, v)
+# point.add_force(f)
+# z = point.calculate_radius_vector(20*np.cos(np.pi/4), +50*np.sin(np.pi/4),n=700)
+# plt.plot(z[:,0],z[:,1])
+# size = int(point.get_size(40))
+# point.plot_radios_vector()
+# print(size)
