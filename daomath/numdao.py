@@ -78,7 +78,7 @@ def integrate(x0, dxdt, t):
     return np.array([x_args, t]).T
 
 
-def leapFrog(u, v, x0, y0, vx_0, vy_0, n=10000, h=0.001):
+def leapFrog(u, v, x0, y0, vx_0, vy_0, n=1000, h=0.1,c = 1):
     """
       verry important numerical method for ode
       can be use well for solving system ode second order
@@ -94,6 +94,7 @@ def leapFrog(u, v, x0, y0, vx_0, vy_0, n=10000, h=0.001):
     :param vy_0:
     :param n:  numbet of step
     :param h:  step
+    :param c = can be some constant as mass
     :return:
     """
 
@@ -109,11 +110,11 @@ def leapFrog(u, v, x0, y0, vx_0, vy_0, n=10000, h=0.001):
     y_speed = [vy]
 
     for i in range(n):
-        x = x + vx * (h / 2)
-        y = y + vy * (h / 2)
+        x = x + vx * (h / 2)/c
+        y = y + vy * (h / 2)/c
 
-        vx = vx + h * u(t, x, y)
-        vy = vy + h * v(t, x, y)
+        vx = (vx + h * u(t, x, y))/c
+        vy = (vy + h * v(t, x, y))/c
 
         x = x + vx * (h / 2)
         y = y + vy * (h / 2)
@@ -145,3 +146,46 @@ def reduce_array(arr,by_step):
         i = i+by_step
 
     return np.array(result)
+
+def solveODE(u, v, u0, v0, t0=0, h=0.001, n=10000):
+
+    """
+    Runge Kuuta method
+    solve system ode
+    :param u: u(x,y,t) e1
+    :param v: v(x,y,t) e2
+    :param u0: initial value
+    :param v0: initial value
+    :param t0: initial value
+    :param h:  increment step
+    :param n:  interval multiple by h give the interval for integration
+    :return:
+    """
+
+    y_args = [v0]  # y_args array for y arguments
+    x_args = [u0]  # x_args array for arguments
+    t_args = [t0]  # time interval
+    x = u0
+    y = v0
+    t = t0
+    for i in range(n):
+        k1 = h * u(t, x, y)
+        l1 = h * v(t, x, y)
+        k2 = h * u(t + h / 2, x + k1 / 2, y + l1 / 2)
+        l2 = h * v(t + h / 2, x + k1 / 2, y + l1 / 2)
+        k3 = h * u(t + h / 2, x + k2 / 2, y + l2 / 2)
+        l3 = h * v(t + h / 2, x + k2 / 2, y + l2 / 2)
+        k4 = h * u(t + h, x + k3, y + l3)
+        l4 = h * v(t + h, x + k3, y + l3)
+        k = (1 / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+        l = (1 / 6) * (l1 + 2 * l2 + 2 * l3 + l4)
+        x = x + k
+        y = y + l
+        t = t + h
+        x_args.append(x)
+        y_args.append(y)
+        t_args.append(t)
+
+        # ax.plot(x_args, y_args, label="solved", color="black")
+
+    return np.array([x_args, y_args, t_args]).T
