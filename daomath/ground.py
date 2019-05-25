@@ -15,7 +15,7 @@ class Ground:
     def add_point(self, point):
         self.points.append(point)
 
-    def calculate_speed_points(self, end_time=10, h=0.1):
+    def calculate_speed_points(self, end_time=10, h=0.1,walls = [[0,10],[0,10]]):
         times = []
         t = 0
         c = 0.5
@@ -25,11 +25,16 @@ class Ground:
                 for j in range(i,len(self.points)):
                     p = self.points[i]
                     p1 = self.points[j]
+
                     if i != j and ((abs(p.last_x - p1.last_x)) <= c) and (abs(p.last_y - p1.last_y) <= c):
                           self.calculate_momentum_conservation(p, p1)
                           is_has_collision = True
                           break
-
+                if walls is not None:
+                    if p.last_x > walls[0][1] or p.last_x < walls[0][0]:
+                        p.last_vx = - p.last_vx
+                    if p.last_y > walls[1][1] or p.last_y < walls[1][0]:
+                        p.last_vy = - p.last_vy
                 if not is_has_collision:
                    self.__update_coordinates(p)
 
@@ -220,13 +225,17 @@ class Ground:
 
 
 
-fig = plt.figure(figsize=(6, 6))
-fig = plt.figure(figsize=(6, 6))
 g = Ground()
-g.add_point(MaterialPoint(x0=5, y0=5, mass=10, v_x0=-0.5, v_y0=-0.5))
-g.add_point(MaterialPoint(x0=0, y0=0, mass=1, v_x0=0.5, v_y0=0.5))
+g.add_point(MaterialPoint(x0=10, y0=10, mass=1, v_x0=-3, v_y0=-3))
+#g.add_point(MaterialPoint(x0=0, y0=0, mass=1, v_x0=2, v_y0=2))
 g.calculate_speed_points(end_time=100)
 points = g.points
+for  p in points:
+    print(p.x_args)
+    print((p.y_args))
+# g.add_point(MaterialPoint(x0=0, y0=0, mass=1, v_x0=2, v_y0=2))
+# g.add_point(MaterialPoint(x0=0, y0=10, mass=3, v_x0=2, v_y0=-2))
+# g.add_point(MaterialPoint(x0=10, y0=0, mass=3, v_x0=-4, v_y0=4))
 # for p in points:
 #     print(p.x_args)
 
