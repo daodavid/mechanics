@@ -201,14 +201,18 @@ class Ground:
             y = p.y_args[i]
             x0 = p.x0
             y0 = p.y0
+            vx = p.last_vx
+            vy = p.last_vy
+            m = p.get_mass()
 
             # line.set_data(x0, y0)
             # q = plt.scatter(x0,y0, color='black', linewidths=5)
             #particles.set_data(x0, y0)
             #q = plt.scatter(0, 0, color='black', linewidths=1)
             #q = plt.scatter(10, 10, color='black', linewidths=5)
-            q = plt.scatter(x, y , linewidths=5)
-            q = plt.scatter(x0, y0, linewidths=1,color='black')
+            q = plt.scatter(x, y , linewidths=m)
+            q = plt.scatter(x0, y0, linewidths=0.1,color='black')
+            z = plt.quiver(x,y,vx,vy,color = 'brown',scale=80,width=0.003)
 
 
 
@@ -230,9 +234,7 @@ g.add_point(MaterialPoint(x0=10, y0=10, mass=1, v_x0=-3, v_y0=-3))
 #g.add_point(MaterialPoint(x0=0, y0=0, mass=1, v_x0=2, v_y0=2))
 g.calculate_speed_points(end_time=100)
 points = g.points
-for  p in points:
-    print(p.x_args)
-    print((p.y_args))
+
 # g.add_point(MaterialPoint(x0=0, y0=0, mass=1, v_x0=2, v_y0=2))
 # g.add_point(MaterialPoint(x0=0, y0=10, mass=3, v_x0=2, v_y0=-2))
 # g.add_point(MaterialPoint(x0=10, y0=0, mass=3, v_x0=-4, v_y0=4))
