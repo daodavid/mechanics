@@ -172,11 +172,11 @@ class MaterialPoint():
     def set_radius_vector(self, arr):
         pass
 
-    def append_coordinates(self,x,y):
-        self.last_x=x
-        self.last_x=y
-        self.x_args.append(x)
-        self.y_args.append(y)
+    def append_coordinates(self,e,e1):
+        self.last_x = e
+        self.last_y =e1
+        self.x_args.append(e)
+        self.y_args.append(e1)
 
 
     def get_radius_vector(self):
