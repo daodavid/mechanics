@@ -105,7 +105,7 @@ class Ground:
 
         x = x + h * vx
         y = y + h * vy
-        p.append_coordinates(x, y)
+        p.append_coordinates(x, y,vx,vy)
 
 
     def update_coor(self, point, v1, v2, h=0.1):
@@ -116,7 +116,7 @@ class Ground:
 
         x = x + h * vx
         y = y + h * vy
-        point.append_coordinates(x, y)
+        point.append_coordinates(x, y,v1,v2)
         point.last_vy=v2
         point.last_vx=v1
 
@@ -132,39 +132,6 @@ class Ground:
         size = len(self.points[0].x_args)
         return size
 
-    def update_HTML_animation(self, i, arg):
-        ax = plt.gca()
-
-        # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
-        # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
-        i = i * self.z
-
-        arg.clf()
-        ax.spines['top'].set_color('none')
-        ax.spines['bottom'].set_position('zero')
-        ax.spines['left'].set_position('zero')
-        ax.spines['right'].set_color('none')
-        ax.set_aspect('equal')
-        particles, = ax.plot([], [], 'bo', ms=6)
-        particles.set_data([], [])
-        particles.set_data(self.r[i, 0], self.r[i, 1])
-        particles.set_markersize(20)
-
-        particles, = ax.plot([], [], 'bo', ms=6)
-
-        for p in self.points:
-            x0 = p.x_args[i]
-            y0 = p.y_args[i]
-            q = plt.scatter(x0.y0, color='black', linewidths=5)
-            particles.set_data([], [])
-            particles.set_data(x0, y0)
-
-            rezult = particles
-
-            z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
-            plt.draw()
-
-        return particles
 
     def plot_ground(self):
         for p in points:
@@ -179,17 +146,13 @@ class Ground:
 
     def update_HTML_animation(self, i, arg):
         ax = plt.gca()
-
-        # q =ax.quiver(0, 0, self.r[i,2],  self.r[i,3], pivot='mid', color='r', units='inches')
-        # q = ax.quiver(0, 0, self.r[i, 2], self.r[i, 3], pivot='mid', color='r', units='inches')
-
-
         arg.clf()
         ax.spines['top'].set_color('none')
         ax.spines['bottom'].set_position('zero')
         ax.spines['left'].set_position('zero')
         ax.spines['right'].set_color('none')
         ax.set_aspect('equal')
+
         particles, = ax.plot([], [], 'bo', ms=6)
         particles.set_data([], [])
 
@@ -201,30 +164,14 @@ class Ground:
             y = p.y_args[i]
             x0 = p.x0
             y0 = p.y0
-            vx = p.last_vx
-            vy = p.last_vy
+            vx = p.v1_args[i]
+            vy = p.v2_args[i]
             m = p.get_mass()
-
-            # line.set_data(x0, y0)
-            # q = plt.scatter(x0,y0, color='black', linewidths=5)
-            #particles.set_data(x0, y0)
-            #q = plt.scatter(0, 0, color='black', linewidths=1)
-            #q = plt.scatter(10, 10, color='black', linewidths=5)
             q = plt.scatter(x, y , linewidths=m)
-            q = plt.scatter(x0, y0, linewidths=0.1,color='black')
+            q = plt.scatter(x0, y0, linewidths=0.001,color='black')
             z = plt.quiver(x,y,vx,vy,color = 'brown',scale=80,width=0.003)
 
-
-
-
-
         plt.draw()
-
-        rezult = particles
-
-
-        plt.draw()
-
         return particles
 
 

@@ -112,6 +112,8 @@ class MaterialPoint():
         self.last_vy=v_y0
         self.x_args = [x0]
         self.y_args = [y0]
+        self.v1_args = [v_x0]
+        self.v2_args = [v_y0]
 
     def __get_coordinate__(self, time):
         pass
@@ -172,11 +174,13 @@ class MaterialPoint():
     def set_radius_vector(self, arr):
         pass
 
-    def append_coordinates(self,e,e1):
+    def append_coordinates(self,e,e1,v1,v2):
         self.last_x = e
         self.last_y =e1
         self.x_args.append(e)
         self.y_args.append(e1)
+        self.v1_args.append(v1)
+        self.v2_args.append(v2)
 
 
     def get_radius_vector(self):
@@ -231,11 +235,7 @@ class MaterialPoint():
         i = i * self.z
 
         arg.clf()
-        ax.spines['top'].set_color('none')
-        ax.spines['bottom'].set_position('zero')
-        ax.spines['left'].set_position('zero')
-        ax.spines['right'].set_color('none')
-        ax.set_aspect('equal')
+
         particles, = ax.plot([], [], 'bo', ms=6)
         particles.set_data([], [])
         particles.set_data(self.r[i, 0], self.r[i, 1])
@@ -248,6 +248,9 @@ class MaterialPoint():
 
         z = plt.plot(self.r[:, 0], self.r[:, 1], color='blue')
         plt.draw()
+        ax.spines['left'].set_position('zero')
+        ax.spines['right'].set_color('none')
+        ax.spines['top'].set_color('none')
 
         return particles
         #
